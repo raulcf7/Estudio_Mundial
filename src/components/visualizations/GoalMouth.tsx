@@ -82,26 +82,15 @@ export function GoalMouth({
               {/* Line connecting badge to head */}
               <line x1={goalkeeperPos.cx} y1="-6" x2={goalkeeperPos.cx} y2="35" stroke="#0f172a" strokeWidth="1" strokeDasharray="2 2" />
 
-              {/* Arms spread for ready stance */}
-              <path
-                d={`M ${goalkeeperPos.cx - 22} 66 L ${goalkeeperPos.cx - 9} 54 M ${goalkeeperPos.cx + 22} 66 L ${goalkeeperPos.cx + 9} 54`}
-                stroke="#10b981"
-                strokeWidth="5"
-                strokeLinecap="round"
+              {/* Goalkeeper silhouette image (feet on ground line at y=100) */}
+              <image
+                href="/goalkeeper.png"
+                x={goalkeeperPos.cx - 19.4}
+                y={36}
+                width={38.9}
+                height={64}
+                preserveAspectRatio="xMidYMax meet"
               />
-              {/* Goalie Gloves (Neon Yellow/Orange) */}
-              <circle cx={goalkeeperPos.cx - 22} cy={66} r="4" fill="#fb923c" stroke="#ffffff" strokeWidth="0.75" />
-              <circle cx={goalkeeperPos.cx + 22} cy={66} r="4" fill="#fb923c" stroke="#ffffff" strokeWidth="0.75" />
-              
-              {/* Torso / Jersey */}
-              <path
-                d={`M ${goalkeeperPos.cx - 11} 100 L ${goalkeeperPos.cx - 9} 58 L ${goalkeeperPos.cx - 3} 49 L ${goalkeeperPos.cx + 3} 49 L ${goalkeeperPos.cx + 11} 58 L ${goalkeeperPos.cx + 11} 100 Z`}
-                fill="#10b981"
-                stroke="#047857"
-                strokeWidth="1"
-              />
-              {/* Head */}
-              <circle cx={goalkeeperPos.cx} cy={42} r="6" fill="#fbcfe8" stroke="#db2777" strokeWidth="0.75" />
             </g>
           )}
 
