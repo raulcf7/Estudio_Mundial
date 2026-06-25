@@ -1,23 +1,52 @@
 import { normalizeGoalPitchCoordinate, pitchPoint } from "@/lib/geometry";
 import { labelFor } from "@/lib/i18n";
 import type { GoalRecord, Language } from "@/lib/types";
+import { GoalNavigator } from "../dashboard/GoalNavigator";
 import { Pitch } from "./Pitch";
+import { ShowAllButton } from "./ShowAllButton";
 
 export function ShotMap({
   goals,
   selectedGoalId,
   language,
   onSelectGoal,
+  focused = false,
+  onShowAll,
+  navIndex,
+  navTotal,
+  onPrevGoal,
+  onNextGoal,
 }: {
   goals: GoalRecord[];
   selectedGoalId: string;
   language: Language;
   onSelectGoal: (goalId: string) => void;
+  focused?: boolean;
+  onShowAll?: () => void;
+  navIndex: number;
+  navTotal: number;
+  onPrevGoal: () => void;
+  onNextGoal: () => void;
 }) {
+  const visibleGoals = focused ? goals.filter((goal) => goal.id === selectedGoalId) : goals;
   return (
-    <Pitch title={language === "es" ? "Campograma de tiros de gol" : "Goal shot map"}>
+    <Pitch
+      title={language === "es" ? "Campograma de tiros de gol" : "Goal shot map"}
+      action={
+        <div className="viz-actions">
+          {focused && onShowAll ? <ShowAllButton language={language} onClick={onShowAll} /> : null}
+          <GoalNavigator
+            index={navIndex}
+            total={navTotal}
+            language={language}
+            onPrev={onPrevGoal}
+            onNext={onNextGoal}
+          />
+        </div>
+      }
+    >
       {/* Trajectories Layer */}
-      {goals.map((goal) => {
+      {visibleGoals.map((goal) => {
         const ownGoal = goal.shot.ownGoal === true;
         const shot = normalizeGoalPitchCoordinate({ x: goal.shot.x, y: goal.shot.y }, ownGoal);
         const start = pitchPoint(shot.x, shot.y);
@@ -40,7 +69,7 @@ export function ShotMap({
       })}
 
       {/* Dots Layer */}
-      {goals.map((goal) => {
+      {visibleGoals.map((goal) => {
         const shot = normalizeGoalPitchCoordinate(
           { x: goal.shot.x, y: goal.shot.y },
           goal.shot.ownGoal === true,

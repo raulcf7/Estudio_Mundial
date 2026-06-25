@@ -57,6 +57,19 @@ const values: Record<string, Record<Language, string>> = {
   very_short: { es: "Muy corto", en: "Very short" },
   short: { es: "Corto", en: "Short" },
   long: { es: "Largo", en: "Long" },
+  // Finish / body part (Remate)
+  "Right Footed": { es: "Pierna derecha", en: "Right Footed" },
+  "Left Footed": { es: "Pierna izquierda", en: "Left Footed" },
+  Head: { es: "Cabeza", en: "Head" },
+  "Other Body Part": { es: "Otra parte del cuerpo", en: "Other Body Part" },
+  // Play pattern (Patrón de juego)
+  "Regular Play": { es: "Juego abierto", en: "Regular Play" },
+  "Fast Break": { es: "Contraataque", en: "Fast Break" },
+  "From Corner": { es: "De córner", en: "From Corner" },
+  "Set Piece": { es: "Balón parado", en: "Set Piece" },
+  "Throw-in Set Piece": { es: "Saque de banda", en: "Throw-in Set Piece" },
+  "Free Kick": { es: "Tiro libre", en: "Free Kick" },
+  Penalty: { es: "Penalti", en: "Penalty" },
 };
 
 export function t(language: Language, key: keyof typeof ui.es) {

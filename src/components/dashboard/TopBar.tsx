@@ -58,9 +58,10 @@ export function TopBar({
       <div className="brand-lockup">
         <img src="/brand/logo-h-color.svg" alt="BeFootball Academy" />
         <span className="brand-divider" aria-hidden />
+        <img src="/fifa-world-cup-2026.png" alt="FIFA World Cup 2026" className="wc-logo" />
         <div className="brand-text">
           <p className="eyebrow">FIFA World Cup 2026</p>
-          <h1>{language === "es" ? "Visualizador de Goles" : "Goal Visualizer"}</h1>
+          <h1>Goal Performance</h1>
         </div>
       </div>
 

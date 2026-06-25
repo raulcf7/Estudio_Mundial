@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BeFootball Academy · Goal Visualizer",
+  title: "BeFootball Academy · Goal Performance",
   description: "Visualizador de goles y porteros — FIFA World Cup 2026 | BeFootball Academy",
 };
 

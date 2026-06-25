@@ -1,18 +1,26 @@
 import { formatReaction } from "@/lib/format";
 import { getDisplayGoalMetrics } from "@/lib/goalMetrics";
+import { playerFace } from "@/lib/images";
 import type { GoalRecord, Language } from "@/lib/types";
+import { ShowAllButton } from "./ShowAllButton";
 
 export function GoalMouth({
   goals,
   selectedGoal,
   language,
   onSelectGoal,
+  focused = false,
+  onShowAll,
 }: {
   goals: GoalRecord[];
   selectedGoal: GoalRecord | undefined;
   language: Language;
   onSelectGoal: (goalId: string) => void;
+  focused?: boolean;
+  onShowAll?: () => void;
 }) {
+  const visibleGoals = focused && selectedGoal ? goals.filter((goal) => goal.id === selectedGoal.id) : goals;
+
   // Calculate goalkeeper position if a goal is selected
   const goalkeeperPos = selectedGoal
     ? (() => {
@@ -24,13 +32,17 @@ export function GoalMouth({
         return {
           cx: gkCx,
           name: selectedGoal.participants.goalkeeperName,
+          face: playerFace(selectedGoal.participants.goalkeeperId),
         };
       })()
     : null;
 
   return (
     <section className="viz-panel flex flex-col items-center">
-      <h2 className="w-full text-left">{language === "es" ? "Portería: entrada del gol" : "Goal mouth: goal entry"}</h2>
+      <div className="viz-head w-full">
+        <h2>{language === "es" ? "Portería: entrada del gol" : "Goal mouth: goal entry"}</h2>
+        {focused && onShowAll ? <ShowAllButton language={language} onClick={onShowAll} /> : null}
+      </div>
       <div className="w-full aspect-[3/2] relative bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-4 flex items-center justify-center">
         <svg viewBox="-20 -25 320 155" className="overflow-visible w-full max-h-[90%]">
           <defs>
@@ -56,46 +68,8 @@ export function GoalMouth({
           <path d="M 20 100 L 40 100" stroke="#cbd5e1" strokeWidth="1.5" />
           <path d="M 260 100 L 240 100" stroke="#cbd5e1" strokeWidth="1.5" />
 
-          {/* Goalkeeper Infographic (drawn behind front frame and dots) */}
-          {goalkeeperPos && (
-            <g className="goalkeeper-infographic" style={{ transition: "all 0.3s ease" }}>
-              {/* Goalkeeper Name Badge */}
-              <rect
-                x={goalkeeperPos.cx - 45}
-                y="-18"
-                width="90"
-                height="12"
-                rx="3"
-                fill="#0f172a"
-                opacity="0.8"
-              />
-              <text
-                x={goalkeeperPos.cx}
-                y="-10"
-                textAnchor="middle"
-                fontSize="7"
-                fill="#ffffff"
-                fontWeight="bold"
-              >
-                {goalkeeperPos.name}
-              </text>
-              {/* Line connecting badge to head */}
-              <line x1={goalkeeperPos.cx} y1="-6" x2={goalkeeperPos.cx} y2="35" stroke="#0f172a" strokeWidth="1" strokeDasharray="2 2" />
-
-              {/* Goalkeeper silhouette image (feet on ground line at y=100) */}
-              <image
-                href="/goalkeeper.png"
-                x={goalkeeperPos.cx - 19.4}
-                y={36}
-                width={38.9}
-                height={64}
-                preserveAspectRatio="xMidYMax meet"
-              />
-            </g>
-          )}
-
           {/* Dots Layer */}
-          {goals.map((goal) => {
+          {visibleGoals.map((goal) => {
             const yMin = 44.6;
             const yMax = 55.4;
             const yVal = Number(goal.goalMouth.y ?? 50);
@@ -105,7 +79,7 @@ export function GoalMouth({
 
             // Normalize yVal from [yMin, yMax] to [0, 100]
             const leftNormalized = Math.max(0, Math.min(100, ((yVal - yMin) / (yMax - yMin)) * 100));
-            
+
             // Map x-coordinate and clamp within the posts with margin r
             const cx = Math.max(20 + r, Math.min(260 - r, 20 + (leftNormalized / 100) * 240));
 
@@ -130,7 +104,7 @@ export function GoalMouth({
             );
           })}
 
-          {/* Front Posts Layer (Top Layer) - SVG */}
+          {/* Front Posts Layer - SVG */}
           {/* Front Frame: Grey Posts */}
           <path
             d="M 20 100 L 20 20 L 260 20 L 260 100"
@@ -142,6 +116,54 @@ export function GoalMouth({
           />
           {/* Ground Line Ref */}
           <path d="M 10 100 L 270 100" stroke="#e2e8f0" strokeWidth="1" />
+
+          {/* Goalkeeper Infographic (drawn on top of the posts so it overlaps the frame) */}
+          {goalkeeperPos && (
+            <g className="goalkeeper-infographic" style={{ transition: "all 0.3s ease" }}>
+              {/* Goalkeeper Name Badge */}
+              <rect x={goalkeeperPos.cx - 45} y="-18" width="90" height="12" rx="3" fill="#0f172a" opacity="0.8" />
+              <text
+                x={goalkeeperPos.cx}
+                y="-10"
+                textAnchor="middle"
+                fontSize="7"
+                fill="#ffffff"
+                fontWeight="bold"
+              >
+                {goalkeeperPos.name}
+              </text>
+              {/* Line connecting badge to head */}
+              <line x1={goalkeeperPos.cx} y1="-6" x2={goalkeeperPos.cx} y2="35" stroke="#0f172a" strokeWidth="1" strokeDasharray="2 2" />
+
+              {/* Goalkeeper silhouette image (feet on ground line at y=100) */}
+              <image
+                href="/goalkeeper.png"
+                x={goalkeeperPos.cx - 19.4}
+                y={36}
+                width={38.9}
+                height={64}
+                preserveAspectRatio="xMidYMax meet"
+              />
+
+              {/* Real goalkeeper face, clipped to a circle over the silhouette's head */}
+              {goalkeeperPos.face && (
+                <>
+                  <clipPath id="gk-face-clip">
+                    <circle cx={goalkeeperPos.cx} cy={39.5} r={9} />
+                  </clipPath>
+                  <image
+                    href={goalkeeperPos.face}
+                    x={goalkeeperPos.cx - 9}
+                    y={30.5}
+                    width={18}
+                    height={18}
+                    clipPath="url(#gk-face-clip)"
+                    preserveAspectRatio="xMidYMid slice"
+                  />
+                </>
+              )}
+            </g>
+          )}
         </svg>
       </div>
 

@@ -4,15 +4,20 @@ export function Pitch({
   children,
   title,
   fullPitch = false,
+  action,
 }: {
   children: ReactNode;
   title: string;
   fullPitch?: boolean;
+  action?: ReactNode;
 }) {
   if (fullPitch) {
     return (
       <section className="viz-panel">
-        <h2>{title}</h2>
+        <div className="viz-head">
+          <h2>{title}</h2>
+          {action}
+        </div>
         <div className="w-full aspect-[1000/680] relative bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
           <svg viewBox="0 0 1000 680" role="img" aria-label={title} className="pitch-svg absolute inset-0 w-full h-full">
             {/* Outer boundary */}
@@ -48,7 +53,10 @@ export function Pitch({
 
   return (
     <section className="viz-panel">
-      <h2>{title}</h2>
+      <div className="viz-head">
+        <h2>{title}</h2>
+        {action}
+      </div>
       <div className="w-full aspect-[3/2] relative bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
         <svg viewBox="0 7.5 68 45" role="img" aria-label={title} className="pitch-svg absolute inset-0 w-full h-full">
           {/* Pitch Outline / Halfway Line (at Y=0, above the viewBox start 7.5, so hidden/cropped unless we draw something) */}

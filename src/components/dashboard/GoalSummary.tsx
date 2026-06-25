@@ -1,7 +1,48 @@
 import { formatDistance, formatNumber, formatReaction, formatSpeed } from "@/lib/format";
 import { getDisplayGoalMetrics } from "@/lib/goalMetrics";
 import { labelFor, t } from "@/lib/i18n";
+import { initials, playerFace, teamCrestByName } from "@/lib/images";
 import type { GoalRecord, Language } from "@/lib/types";
+
+function Crest({ src, name, size = "md" }: { src: string | null; name: string; size?: "xs" | "md" | "lg" }) {
+  const cls = `crest crest-${size}`;
+  if (src) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img className={cls} src={src} alt={name} />;
+  }
+  return (
+    <span className={`${cls} crest-fallback`} aria-hidden>
+      {initials(name)}
+    </span>
+  );
+}
+
+function PlayerChip({
+  role,
+  name,
+  face,
+}: {
+  role: string;
+  name: string;
+  face: string | null;
+}) {
+  return (
+    <div className="player-chip">
+      <div className="avatar">
+        {face ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={face} alt={name} />
+        ) : (
+          <span className="avatar-fallback">{initials(name)}</span>
+        )}
+      </div>
+      <div className="player-chip-text">
+        <span className="player-chip-role">{role}</span>
+        <span className="player-chip-name">{name}</span>
+      </div>
+    </div>
+  );
+}
 
 export function GoalSummary({ goal, language }: { goal: GoalRecord | undefined; language: Language }) {
   if (!goal) {
@@ -9,24 +50,50 @@ export function GoalSummary({ goal, language }: { goal: GoalRecord | undefined; 
   }
 
   const displayMetrics = getDisplayGoalMetrics(goal);
+  const p = goal.participants;
+  const homeName = String(goal.match.homeTeam ?? "");
+  const awayName = String(goal.match.awayTeam ?? "");
 
   return (
     <aside className="summary-panel">
       <h2>{t(language, "summary")}</h2>
-      <p className="match-line">
-        {goal.match.homeTeam} {goal.match.finalHomeGoals}-{goal.match.finalAwayGoals} {goal.match.awayTeam}
-      </p>
+
+      <div className="match-head">
+        <div className="match-team">
+          <Crest src={teamCrestByName(homeName)} name={homeName} size="lg" />
+          <span className="match-team-name">{homeName}</span>
+        </div>
+        <div className="match-score">
+          {goal.match.finalHomeGoals}
+          <span className="match-score-sep">-</span>
+          {goal.match.finalAwayGoals}
+        </div>
+        <div className="match-team match-team-away">
+          <span className="match-team-name">{awayName}</span>
+          <Crest src={teamCrestByName(awayName)} name={awayName} size="lg" />
+        </div>
+      </div>
+
+      <div className="player-cards">
+        <PlayerChip
+          role={language === "es" ? "Rematador" : "Scorer"}
+          name={p.scorerName}
+          face={playerFace(p.scorerId)}
+        />
+        <PlayerChip
+          role={language === "es" ? "Portero" : "Goalkeeper"}
+          name={p.goalkeeperName}
+          face={playerFace(p.goalkeeperId)}
+        />
+      </div>
+
       <dl>
         <dt>{language === "es" ? "Minuto" : "Minute"}</dt>
         <dd>{String(goal.match.minute ?? "-")}&apos;</dd>
-        <dt>{language === "es" ? "Rematador" : "Scorer"}</dt>
-        <dd>{goal.participants.scorerName}</dd>
-        <dt>{language === "es" ? "Portero" : "Goalkeeper"}</dt>
-        <dd>{goal.participants.goalkeeperName}</dd>
         <dt>{language === "es" ? "Equipo que marca" : "Scoring team"}</dt>
-        <dd>{goal.participants.scoringTeam}</dd>
+        <dd>{p.scoringTeam}</dd>
         <dt>{language === "es" ? "Equipo que encaja" : "Conceding team"}</dt>
-        <dd>{goal.participants.concedingTeam}</dd>
+        <dd>{p.concedingTeam}</dd>
         <dt>{language === "es" ? "Tipo de remate" : "Finish type"}</dt>
         <dd>
           {String(goal.shot.bodyPart ?? "-")} - {String(goal.shot.playPattern ?? "-")}

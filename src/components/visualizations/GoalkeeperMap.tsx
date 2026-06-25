@@ -1,18 +1,24 @@
 import { normalizeGoalPitchCoordinate, pitchPoint } from "@/lib/geometry";
 import type { GoalRecord, Language } from "@/lib/types";
 import { Pitch } from "./Pitch";
+import { ShowAllButton } from "./ShowAllButton";
 
 export function GoalkeeperMap({
   goals,
   selectedGoal,
   language,
   onSelectGoal,
+  focused = false,
+  onShowAll,
 }: {
   goals: GoalRecord[];
   selectedGoal: GoalRecord | undefined;
   language: Language;
   onSelectGoal: (goalId: string) => void;
+  focused?: boolean;
+  onShowAll?: () => void;
 }) {
+  const visibleGoals = focused && selectedGoal ? goals.filter((goal) => goal.id === selectedGoal.id) : goals;
   const selectedShotCoordinate = selectedGoal
     ? normalizeGoalPitchCoordinate({ x: selectedGoal.shot.x, y: selectedGoal.shot.y }, selectedGoal.shot.ownGoal === true)
     : null;
@@ -20,7 +26,10 @@ export function GoalkeeperMap({
   const selectedGk = selectedGoal ? pitchPoint(Number(selectedGoal.goalkeeper.x ?? 0), Number(selectedGoal.goalkeeper.y ?? 0)) : null;
 
   return (
-    <Pitch title={language === "es" ? "Posición del portero en cada gol" : "Goalkeeper position per goal"}>
+    <Pitch
+      title={language === "es" ? "Posición del portero en cada gol" : "Goalkeeper position per goal"}
+      action={focused && onShowAll ? <ShowAllButton language={language} onClick={onShowAll} /> : undefined}
+    >
       {selectedShot && selectedGk ? (
         <line
           x1={selectedShot.x}
@@ -32,7 +41,7 @@ export function GoalkeeperMap({
           strokeWidth={2}
         />
       ) : null}
-      {goals.map((goal) => {
+      {visibleGoals.map((goal) => {
         const point = pitchPoint(Number(goal.goalkeeper.x ?? 0), Number(goal.goalkeeper.y ?? 0));
         const selected = goal.id === selectedGoal?.id;
         return (
