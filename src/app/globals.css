@@ -824,7 +824,7 @@ select {
 /* Player chips (scorer / goalkeeper) */
 .player-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 8px;
   margin-bottom: 16px;
 }
@@ -832,6 +832,7 @@ select {
   display: flex;
   align-items: center;
   gap: 9px;
+  min-width: 0;
   padding: 8px 10px;
   border-radius: var(--radius-sm);
   background: var(--surface);
@@ -894,9 +895,11 @@ select {
   font-size: 13px;
   font-weight: 700;
   color: var(--bf-black);
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
 }
 
 /* ---------- Responsive ---------- */
