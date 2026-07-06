@@ -1,6 +1,7 @@
 import { fullPitchPoint, normalizeGoalPitchCoordinate } from "@/lib/geometry";
 import type { GoalRecord, Language, SequenceEvent } from "@/lib/types";
 import { Pitch } from "./Pitch";
+import { sequenceMapWidgetCoordinate } from "./SequenceMap.geometry";
 
 export function SequenceMap({
   goal,
@@ -41,7 +42,8 @@ export function SequenceMap({
       })}
       {events.map((event, index) => {
         const coordinate = normalizeGoalPitchCoordinate({ x: event.x, y: event.y }, ownGoal);
-        const point = fullPitchPoint(coordinate.x, coordinate.y);
+        const mirroredCoordinate = sequenceMapWidgetCoordinate(coordinate);
+        const point = fullPitchPoint(mirroredCoordinate.x, mirroredCoordinate.y);
         const highlighted = event.eventId === highlightedEventId;
         return (
           <circle
@@ -64,8 +66,10 @@ export function SequenceMap({
 function SequenceArrow({ from, to, ownGoal }: { from: SequenceEvent; to: SequenceEvent; ownGoal: boolean }) {
   const fromCoordinate = normalizeGoalPitchCoordinate({ x: from.x, y: from.y }, ownGoal);
   const toCoordinate = normalizeGoalPitchCoordinate({ x: to.x, y: to.y }, ownGoal);
-  const start = fullPitchPoint(fromCoordinate.x, fromCoordinate.y);
-  const end = fullPitchPoint(toCoordinate.x, toCoordinate.y);
+  const mirroredFrom = sequenceMapWidgetCoordinate(fromCoordinate);
+  const mirroredTo = sequenceMapWidgetCoordinate(toCoordinate);
+  const start = fullPitchPoint(mirroredFrom.x, mirroredFrom.y);
+  const end = fullPitchPoint(mirroredTo.x, mirroredTo.y);
   return (
     <line
       x1={start.x}
