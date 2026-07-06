@@ -2,6 +2,7 @@ import { formatReaction } from "@/lib/format";
 import { getDisplayGoalMetrics } from "@/lib/goalMetrics";
 import { playerFace } from "@/lib/images";
 import type { GoalRecord, Language } from "@/lib/types";
+import { goalMouthWidgetLateralPercent } from "./GoalMouth.geometry";
 import { ShowAllButton } from "./ShowAllButton";
 
 export function GoalMouth({
@@ -26,9 +27,7 @@ export function GoalMouth({
   const goalkeeperPos = selectedGoal
     ? (() => {
         const gkY = Number(selectedGoal.goalkeeper?.y ?? 50);
-        const yMin = 44.6;
-        const yMax = 55.4;
-        const gkLeftNormalized = Math.max(0, Math.min(100, ((gkY - yMin) / (yMax - yMin)) * 100));
+        const gkLeftNormalized = goalMouthWidgetLateralPercent(gkY);
         const gkCx = 20 + (gkLeftNormalized / 100) * 240;
         return {
           cx: gkCx,
@@ -79,15 +78,12 @@ export function GoalMouth({
 
           {/* Dots Layer */}
           {visibleGoals.map((goal) => {
-            const yMin = 44.6;
-            const yMax = 55.4;
             const yVal = Number(goal.goalMouth.y ?? 50);
             const zVal = Number(goal.goalMouth.z ?? 0);
             const selected = goal.id === selectedGoal?.id;
             const r = selected ? 3.5 : 1.75;
 
-            // Normalize yVal from [yMin, yMax] to [0, 100]
-            const leftNormalized = Math.max(0, Math.min(100, ((yVal - yMin) / (yMax - yMin)) * 100));
+            const leftNormalized = goalMouthWidgetLateralPercent(yVal);
 
             // Map x-coordinate and clamp within the posts with margin r
             const cx = Math.max(20 + r, Math.min(260 - r, 20 + (leftNormalized / 100) * 240));
