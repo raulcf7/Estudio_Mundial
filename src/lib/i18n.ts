@@ -3,6 +3,7 @@ import type { Language } from "./types";
 const ui = {
   es: {
     goals: "Goles",
+    shots: "Tiros",
     avgXg: "xG medio",
     avgXgot: "xGOT medio",
     shotMap: "Mapa de tiros",
@@ -14,6 +15,7 @@ const ui = {
   },
   en: {
     goals: "Goals",
+    shots: "Shots",
     avgXg: "Avg xG",
     avgXgot: "Avg xGOT",
     shotMap: "Shot map",

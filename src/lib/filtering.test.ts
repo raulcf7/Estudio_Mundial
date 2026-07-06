@@ -64,6 +64,7 @@ describe("filtering", () => {
       finishCorners: [],
       shotSpeedCategories: ["high"],
       reactionTimeCategories: ["short"],
+      shotView: "all",
       minuteRange: [0, 90],
       warningsOnly: false,
     };
@@ -76,5 +77,37 @@ describe("filtering", () => {
     expect(nextSelectedGoalId([{ ...baseGoal, id: "g2" }], "g1")).toBe("g2");
     expect(nextSelectedGoalId([{ ...baseGoal, id: "g1" }], "g1")).toBe("g1");
     expect(nextSelectedGoalId([], "g1")).toBe("");
+  });
+
+  it("can limit the dataset to goals only", () => {
+    const savedShot = {
+      ...baseGoal,
+      id: "s1",
+      shot: { ...baseGoal.shot, isGoal: false },
+    };
+    const filters: GoalFilters = {
+      search: "",
+      scoringTeams: [],
+      concedingTeams: [],
+      goalkeepers: [],
+      scorers: [],
+      bodyParts: [],
+      playPatterns: [],
+      tacticalSituations: [],
+      vrScenarios: [],
+      goalkeeperDepths: [],
+      goalMouthHeights: [],
+      finishCorners: [],
+      shotSpeedCategories: [],
+      reactionTimeCategories: [],
+      shotView: "goals",
+      minuteRange: [0, 90],
+      warningsOnly: false,
+    };
+
+    expect(applyFilters([{ ...baseGoal, shot: { ...baseGoal.shot, isGoal: true } }, savedShot], filters)).toEqual([
+      { ...baseGoal, shot: { ...baseGoal.shot, isGoal: true } },
+    ]);
+    expect(applyFilters([savedShot], { ...filters, shotView: "all" })).toHaveLength(1);
   });
 });

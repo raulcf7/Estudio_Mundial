@@ -46,17 +46,24 @@ function PlayerChip({
 
 export function GoalSummary({ goal, language }: { goal: GoalRecord | undefined; language: Language }) {
   if (!goal) {
-    return <aside className="summary-panel">{language === "es" ? "Sin goles filtrados" : "No filtered goals"}</aside>;
+    return <aside className="summary-panel">{language === "es" ? "Sin tiros filtrados" : "No filtered shots"}</aside>;
   }
 
   const displayMetrics = getDisplayGoalMetrics(goal);
   const p = goal.participants;
   const homeName = String(goal.match.homeTeam ?? "");
   const awayName = String(goal.match.awayTeam ?? "");
+  const isGoal = goal.shot.isGoal === true;
 
   return (
     <aside className="summary-panel">
-      <h2>{t(language, "summary")}</h2>
+      <h2>
+        {isGoal
+          ? t(language, "summary")
+          : language === "es"
+            ? "Resumen del tiro"
+            : "Shot summary"}
+      </h2>
 
       <div className="match-head">
         <div className="match-team">

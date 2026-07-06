@@ -43,6 +43,7 @@ export function applyFilters(goals: GoalRecord[], filters: GoalFilters) {
       includesOrEmpty(filters.finishCorners, goal.goalMouth.finishCornerCategory) &&
       includesOrEmpty(filters.shotSpeedCategories, goal.metrics.shotSpeedCategory) &&
       includesOrEmpty(filters.reactionTimeCategories, getDisplayGoalMetrics(goal).reactionTimeCategory) &&
+      (filters.shotView === "all" || goal.shot.isGoal === true) &&
       (!filters.warningsOnly || hasWarning(goal))
     );
   });

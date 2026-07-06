@@ -173,6 +173,14 @@ select {
 }
 
 /* ---------- Language toggle ---------- */
+.top-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.shot-view-toggle,
 .language-toggle {
   display: inline-flex;
   gap: 4px;
@@ -181,6 +189,7 @@ select {
   background: rgba(3, 15, 9, 0.3);
   border: 1px solid rgba(251, 255, 238, 0.14);
 }
+.shot-view-toggle button,
 .language-toggle button {
   border: none;
   border-radius: 999px;
@@ -192,7 +201,13 @@ select {
   font-size: 13px;
   transition: all 0.22s var(--ease);
 }
+.shot-view-toggle button {
+  padding-inline: 12px;
+  white-space: nowrap;
+}
+.shot-view-toggle button:hover,
 .language-toggle button:hover { color: var(--bf-white); }
+.shot-view-toggle button.active,
 .language-toggle button.active {
   background: var(--bf-lime);
   color: var(--bf-black);

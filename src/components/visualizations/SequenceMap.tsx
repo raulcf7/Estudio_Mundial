@@ -15,9 +15,21 @@ export function SequenceMap({
 }) {
   const events = goal?.sequence.events ?? [];
   const ownGoal = goal?.shot.ownGoal === true;
+  const isGoalShot = goal?.shot.isGoal === true;
 
   return (
-    <Pitch title={language === "es" ? "Secuencia previa del gol" : "Pre-goal sequence"} fullPitch={true}>
+    <Pitch
+      title={
+        isGoalShot
+          ? language === "es"
+            ? "Secuencia previa del gol"
+            : "Pre-goal sequence"
+          : language === "es"
+            ? "Secuencia previa del tiro"
+            : "Pre-shot sequence"
+      }
+      fullPitch={true}
+    >
       {goal?.sequence.isFallback ? (
         <text x="45" y="70" fontSize="13" className="sequence-note font-semibold" fill="#ef4444">
           {language === "es" ? "Secuencia incompleta: se muestra el evento disponible." : "Incomplete sequence: showing available event."}

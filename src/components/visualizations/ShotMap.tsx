@@ -29,9 +29,18 @@ export function ShotMap({
   onNextGoal: () => void;
 }) {
   const visibleGoals = focused ? goals.filter((goal) => goal.id === selectedGoalId) : goals;
+  const hasNonGoalShots = goals.some((goal) => goal.shot.isGoal !== true);
   return (
     <Pitch
-      title={language === "es" ? "Campograma de tiros de gol" : "Goal shot map"}
+      title={
+        hasNonGoalShots
+          ? language === "es"
+            ? "Campograma de tiros"
+            : "Shot map"
+          : language === "es"
+            ? "Campograma de tiros de gol"
+            : "Goal shot map"
+      }
       action={
         <div className="viz-actions">
           {focused && onShowAll ? <ShowAllButton language={language} onClick={onShowAll} /> : null}

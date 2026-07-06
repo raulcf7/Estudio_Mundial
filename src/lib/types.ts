@@ -1,4 +1,5 @@
 export type Language = "es" | "en";
+export type ShotView = "goals" | "all";
 
 export type SequenceEvent = {
   eventId: number | null;
@@ -45,6 +46,7 @@ export type GoalFilters = {
   finishCorners: string[];
   shotSpeedCategories: string[];
   reactionTimeCategories: string[];
+  shotView: ShotView;
   minuteRange: [number, number];
   warningsOnly: boolean;
 };

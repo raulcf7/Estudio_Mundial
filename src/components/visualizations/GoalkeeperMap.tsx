@@ -19,6 +19,7 @@ export function GoalkeeperMap({
   onShowAll?: () => void;
 }) {
   const visibleGoals = focused && selectedGoal ? goals.filter((goal) => goal.id === selectedGoal.id) : goals;
+  const hasNonGoalShots = goals.some((goal) => goal.shot.isGoal !== true);
   const selectedShotCoordinate = selectedGoal
     ? normalizeGoalPitchCoordinate({ x: selectedGoal.shot.x, y: selectedGoal.shot.y }, selectedGoal.shot.ownGoal === true)
     : null;
@@ -27,7 +28,15 @@ export function GoalkeeperMap({
 
   return (
     <Pitch
-      title={language === "es" ? "Posición del portero en cada gol" : "Goalkeeper position per goal"}
+      title={
+        hasNonGoalShots
+          ? language === "es"
+            ? "Posicion del portero en cada tiro"
+            : "Goalkeeper position per shot"
+          : language === "es"
+            ? "Posicion del portero en cada gol"
+            : "Goalkeeper position per goal"
+      }
       action={focused && onShowAll ? <ShowAllButton language={language} onClick={onShowAll} /> : undefined}
     >
       {selectedShot && selectedGk ? (
@@ -46,9 +55,7 @@ export function GoalkeeperMap({
         const selected = goal.id === selectedGoal?.id;
         return (
           <g key={goal.id} className="cursor-pointer" onClick={() => onSelectGoal(goal.id)}>
-            {/* Invisible large click target */}
             <circle cx={point.x} cy={point.y} r={2.0} fill="transparent" />
-            {/* Visual circle */}
             <circle
               cx={point.x}
               cy={point.y}
@@ -56,7 +63,7 @@ export function GoalkeeperMap({
               className={selected ? "gk-point selected animate-pulse" : "gk-point"}
               vectorEffect="non-scaling-stroke"
             >
-              <title>{`${goal.participants.goalkeeperName} · ${goal.participants.concedingTeam}`}</title>
+              <title>{`${goal.participants.goalkeeperName} - ${goal.participants.concedingTeam}`}</title>
             </circle>
           </g>
         );

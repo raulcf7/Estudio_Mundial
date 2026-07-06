@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { formatDistance, formatNumber, formatReaction, formatSpeed } from "@/lib/format";
 import { getDisplayGoalMetrics } from "@/lib/goalMetrics";
 import { t } from "@/lib/i18n";
-import type { GoalRecord, Language } from "@/lib/types";
+import type { GoalRecord, Language, ShotView } from "@/lib/types";
 
 function average(goals: GoalRecord[], selector: (goal: GoalRecord) => unknown) {
   const values = goals
@@ -28,12 +28,16 @@ export function TopBar({
   onLanguageChange,
   search,
   onSearchChange,
+  shotView,
+  onShotViewChange,
 }: {
   goals: GoalRecord[];
   language: Language;
   onLanguageChange: (language: Language) => void;
   search: string;
   onSearchChange: (search: string) => void;
+  shotView: ShotView;
+  onShotViewChange: (shotView: ShotView) => void;
 }) {
   // Subtle scroll-aware elevation for the sticky header
   const [scrolled, setScrolled] = useState(false);
@@ -73,17 +77,28 @@ export function TopBar({
         aria-label={language === "es" ? "Buscar jugador, equipo o partido" : "Search player, team, or match"}
       />
 
-      <div className="language-toggle" role="group" aria-label="Language">
-        <button className={language === "es" ? "active" : ""} onClick={() => onLanguageChange("es")}>
-          ES
-        </button>
-        <button className={language === "en" ? "active" : ""} onClick={() => onLanguageChange("en")}>
-          EN
-        </button>
+      <div className="top-controls">
+        <div className="shot-view-toggle" role="group" aria-label={language === "es" ? "Tipo de tiros" : "Shot type"}>
+          <button className={shotView === "goals" ? "active" : ""} onClick={() => onShotViewChange("goals")}>
+            {language === "es" ? "Solo goles" : "Goals"}
+          </button>
+          <button className={shotView === "all" ? "active" : ""} onClick={() => onShotViewChange("all")}>
+            {language === "es" ? "Todos los tiros" : "All shots"}
+          </button>
+        </div>
+
+        <div className="language-toggle" role="group" aria-label="Language">
+          <button className={language === "es" ? "active" : ""} onClick={() => onLanguageChange("es")}>
+            ES
+          </button>
+          <button className={language === "en" ? "active" : ""} onClick={() => onLanguageChange("en")}>
+            EN
+          </button>
+        </div>
       </div>
 
       <div className="kpi-strip">
-        <Kpi label={t(language, "goals")} value={goals.length} />
+        <Kpi label={shotView === "goals" ? t(language, "goals") : t(language, "shots")} value={goals.length} />
         <Kpi label={t(language, "avgXg")} value={formatNumber(average(goals, (goal) => goal.shot.xg))} />
         <Kpi label={t(language, "avgXgot")} value={formatNumber(average(goals, (goal) => goal.shot.xgot))} />
         <Kpi

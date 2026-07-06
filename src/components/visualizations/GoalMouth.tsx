@@ -20,6 +20,7 @@ export function GoalMouth({
   onShowAll?: () => void;
 }) {
   const visibleGoals = focused && selectedGoal ? goals.filter((goal) => goal.id === selectedGoal.id) : goals;
+  const hasNonGoalShots = goals.some((goal) => goal.shot.isGoal !== true);
 
   // Calculate goalkeeper position if a goal is selected
   const goalkeeperPos = selectedGoal
@@ -40,7 +41,15 @@ export function GoalMouth({
   return (
     <section className="viz-panel flex flex-col items-center">
       <div className="viz-head w-full">
-        <h2>{language === "es" ? "Portería: entrada del gol" : "Goal mouth: goal entry"}</h2>
+        <h2>
+          {hasNonGoalShots
+            ? language === "es"
+              ? "Porteria: destino del tiro"
+              : "Goal mouth: shot destination"
+            : language === "es"
+              ? "Porteria: entrada del gol"
+              : "Goal mouth: goal entry"}
+        </h2>
         {focused && onShowAll ? <ShowAllButton language={language} onClick={onShowAll} /> : null}
       </div>
       <div className="w-full aspect-[3/2] relative bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-4 flex items-center justify-center">
