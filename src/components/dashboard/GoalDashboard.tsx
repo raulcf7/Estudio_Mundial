@@ -27,6 +27,7 @@ const defaultFilters: GoalFilters = {
   shotSpeedCategories: [],
   reactionTimeCategories: [],
   shotView: "goals",
+  shotOutcomeView: "all",
   minuteRange: [0, 130],
   warningsOnly: false,
 };
@@ -91,6 +92,8 @@ export function GoalDashboard({ goals: rawGoals }: { goals: GoalRecord[] }) {
         onSearchChange={(search) => setFilters((current) => ({ ...current, search }))}
         shotView={filters.shotView}
         onShotViewChange={(shotView) => setFilters((current) => ({ ...current, shotView }))}
+        shotOutcomeView={filters.shotOutcomeView}
+        onShotOutcomeViewChange={(shotOutcomeView) => setFilters((current) => ({ ...current, shotOutcomeView }))}
       />
       <section className="dashboard-grid">
         <FilterPanel goals={goals} filters={filters} language={language} onFiltersChange={setFilters} />

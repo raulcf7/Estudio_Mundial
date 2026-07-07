@@ -65,6 +65,7 @@ describe("filtering", () => {
       shotSpeedCategories: ["high"],
       reactionTimeCategories: ["short"],
       shotView: "all",
+      shotOutcomeView: "all",
       minuteRange: [0, 90],
       warningsOnly: false,
     };
@@ -101,6 +102,7 @@ describe("filtering", () => {
       shotSpeedCategories: [],
       reactionTimeCategories: [],
       shotView: "goals",
+      shotOutcomeView: "all",
       minuteRange: [0, 90],
       warningsOnly: false,
     };
@@ -109,5 +111,36 @@ describe("filtering", () => {
       { ...baseGoal, shot: { ...baseGoal.shot, isGoal: true } },
     ]);
     expect(applyFilters([savedShot], { ...filters, shotView: "all" })).toHaveLength(1);
+  });
+
+  it("can limit all-shots mode to shots that did not become goals", () => {
+    const goalShot = { ...baseGoal, shot: { ...baseGoal.shot, isGoal: true } };
+    const savedShot = {
+      ...baseGoal,
+      id: "s1",
+      shot: { ...baseGoal.shot, isGoal: false },
+    };
+    const filters = {
+      search: "",
+      scoringTeams: [],
+      concedingTeams: [],
+      goalkeepers: [],
+      scorers: [],
+      bodyParts: [],
+      playPatterns: [],
+      tacticalSituations: [],
+      vrScenarios: [],
+      goalkeeperDepths: [],
+      goalMouthHeights: [],
+      finishCorners: [],
+      shotSpeedCategories: [],
+      reactionTimeCategories: [],
+      shotView: "all",
+      shotOutcomeView: "nonGoals",
+      minuteRange: [0, 90],
+      warningsOnly: false,
+    } as GoalFilters & { shotOutcomeView: "nonGoals" };
+
+    expect(applyFilters([goalShot, savedShot], filters)).toEqual([savedShot]);
   });
 });
