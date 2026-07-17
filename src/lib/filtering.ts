@@ -21,6 +21,8 @@ export function applyFilters(goals: GoalRecord[], filters: GoalFilters) {
       goal.participants.concedingTeam,
       goal.match.homeTeam,
       goal.match.awayTeam,
+      `${goal.match.homeTeam ?? ""} vs ${goal.match.awayTeam ?? ""}`,
+      `${goal.match.awayTeam ?? ""} vs ${goal.match.homeTeam ?? ""}`,
       goal.match.venue,
     ]
       .join(" ")

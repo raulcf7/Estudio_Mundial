@@ -86,6 +86,7 @@ export function GoalDashboard({ goals: rawGoals }: { goals: GoalRecord[] }) {
     <main className="dashboard-shell">
       <TopBar
         goals={filteredGoals}
+        suggestionGoals={goals}
         language={language}
         onLanguageChange={setLanguage}
         search={filters.search}
